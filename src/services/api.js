@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://ai-analytics-backend.onrender.com'; // Update this to match your backend URL
+const API_BASE_URL = 'http://localhost:3000'; // Update this to match your backend URL
 
 export const fetchQueryData = async (query) => {
     try {
@@ -22,6 +22,19 @@ export const fetchQueryData = async (query) => {
         if (error.message === 'Failed to fetch') {
             throw new Error('Unable to connect to the server. Please make sure the backend server is running.');
         }
+        throw error;
+    }
+};
+
+export const fetchTableInsights = async (tableName) => {
+    try {
+        const response = await fetch(`${API_BASE_URL}/table-insights/${tableName}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch table insights');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching table insights:', error);
         throw error;
     }
 };

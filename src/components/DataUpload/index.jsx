@@ -1,27 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
 import '../../styles/dashboard.css';
 
-const DataUpload = () => {
+const DataUpload = ({ onTableUpdate }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
     const [existingTable, setExistingTable] = useState(null);
     const fileInputRef = useRef(null);
 
-    useEffect(() => {
-        fetchExistingTable();
-    }, []);
-
     const fetchExistingTable = async () => {
         try {
-            const response = await fetch('https://ai-analytics-backend.onrender.com/tables');
+            const response = await fetch('http://localhost:3000/tables');
             const data = await response.json();
             if (data && data.length > 0) {
                 setExistingTable(data[0]);
+            } else {
+                setExistingTable(null);
             }
         } catch (error) {
             console.error('Error fetching tables:', error);
+            setExistingTable(null);
         }
     };
+
+    useEffect(() => {
+        fetchExistingTable();
+    }, []);
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -43,7 +46,12 @@ const DataUpload = () => {
             const formData = new FormData();
             formData.append('file', selectedFile);
 
-            const response = await fetch('https://ai-analytics-backend.onrender.com/upload', {
+            // Notify parent immediately about upcoming update
+            if (onTableUpdate) {
+                onTableUpdate();
+            }
+
+            const response = await fetch('http://localhost:3000/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -52,11 +60,15 @@ const DataUpload = () => {
                 throw new Error('Upload failed');
             }
 
-            await fetchExistingTable();
+            // Clear the file input
             setSelectedFile(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = null;
             }
+
+            // Update local state
+            await fetchExistingTable();
+
         } catch (error) {
             console.error('Upload error:', error);
             alert('Failed to upload file. Please try again.');
@@ -69,7 +81,12 @@ const DataUpload = () => {
         if (!existingTable) return;
 
         try {
-            const response = await fetch(`https://ai-analytics-backend.onrender.com/table/${existingTable.table_name}`, {
+            // Call parent's update handler with isDelete flag
+            if (onTableUpdate) {
+                onTableUpdate(true);
+            }
+
+            const response = await fetch(`http://localhost:3000/table/${existingTable.table_name}`, {
                 method: 'DELETE'
             });
 
@@ -78,6 +95,7 @@ const DataUpload = () => {
             }
 
             setExistingTable(null);
+
         } catch (error) {
             console.error('Delete error:', error);
             alert('Failed to delete table. Please try again.');
