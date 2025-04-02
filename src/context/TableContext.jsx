@@ -9,7 +9,7 @@ export const TableProvider = ({ children }) => {
     const updateTable = async () => {
         setIsLoadingTable(true);
         try {
-            const response = await fetch('http://localhost:3000/tables');
+            const response = await fetch('https://ai-analytics-backend.onrender.com/tables');
             const data = await response.json();
             if (data && data.length > 0) {
                 setCurrentTable(data[0]);

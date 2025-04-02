@@ -9,7 +9,7 @@ const DataUpload = ({ onTableUpdate }) => {
 
     const fetchExistingTable = async () => {
         try {
-            const response = await fetch('http://localhost:3000/tables');
+            const response = await fetch('https://ai-analytics-backend.onrender.com/tables');
             const data = await response.json();
             if (data && data.length > 0) {
                 setExistingTable(data[0]);
@@ -51,7 +51,7 @@ const DataUpload = ({ onTableUpdate }) => {
                 onTableUpdate();
             }
 
-            const response = await fetch('http://localhost:3000/upload', {
+            const response = await fetch('https://ai-analytics-backend.onrender.com/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -86,7 +86,7 @@ const DataUpload = ({ onTableUpdate }) => {
                 onTableUpdate(true);
             }
 
-            const response = await fetch(`http://localhost:3000/table/${existingTable.table_name}`, {
+            const response = await fetch(`https://ai-analytics-backend.onrender.com/table/${existingTable.table_name}`, {
                 method: 'DELETE'
             });
 

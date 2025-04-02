@@ -35,7 +35,7 @@ const Dashboard = () => {
     // Simple fetch for initial load - no polling
     const fetchInitialTableData = async () => {
         try {
-            const response = await fetch('http://localhost:3000/tables');
+            const response = await fetch('https://ai-analytics-backend.onrender.com/tables');
             const data = await response.json();
             if (data && data.length > 0) {
                 setCurrentTable(data[0]);
@@ -56,7 +56,7 @@ const Dashboard = () => {
 
         const pollData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/tables');
+                const response = await fetch('https://ai-analytics-backend.onrender.com/tables');
                 const data = await response.json();
 
                 if (data && data.length > 0 && data[0].example_queries) {

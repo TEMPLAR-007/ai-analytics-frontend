@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3000'; // Update this to match your backend URL
+const API_BASE_URL = 'https://ai-analytics-backend.onrender.com'; // Update this to match your backend URL
 
 export const fetchQueryData = async (query) => {
     try {
